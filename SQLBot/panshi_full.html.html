@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLBot · 磐石风格（全功能预览）</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', system-ui, 'Segoe UI', sans-serif;
+        }
+        body {
+            background-color: #F2F4F8;
+            height: 100vh;
+            display: flex;
+            color: #1F2A3A;
+        }
+        .sidebar {
+            width: 260px;
+            background: white;
+            border-right: 1px solid #D0D7DE;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+        }
+        .logo-area {
+            padding: 0 20px 28px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #e5e9f0;
+            margin-bottom: 16px;
+        }
+        .logo {
+            width: 28px;
+            height: 28px;
+            background: #1E3A8A;
+            border-radius: 4px;
+        }
+        .logo-text {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #1E3A8A;
+            letter-spacing: 0.3px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            margin: 2px 12px;
+            border-radius: 4px;
+            color: #2f4057;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+        .nav-item i {
+            width: 20px;
+            font-size: 1rem;
+            color: #5e7a9f;
+        }
+        .nav-item.active {
+            background: #EFF2F7;
+            border-left: 3px solid #1E3A8A;
+            color: #1E3A8A;
+            font-weight: 600;
+        }
+        .nav-item.active i {
+            color: #1E3A8A;
+        }
+        .nav-item:not(.active):hover {
+            background: #F0F3F9;
+        }
+        .bottom-nav {
+            margin-top: auto;
+            border-top: 1px solid #e5e9f0;
+            padding-top: 16px;
+        }
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 24px 32px;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+        .workspace {
+            background: white;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            border: 1px solid #D0D7DE;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 4px;
+            background: #D4AF37;
+        }
+        .page {
+            display: none;
+        }
+        .page.active-page {
+            display: block;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 6px;
+            padding: 18px;
+            border: 1px solid #D0D7DE;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+            border-left: 4px solid #1E3A8A;
+        }
+        .stat-title {
+            font-size: 0.8rem;
+            color: #697b96;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1E3A8A;
+            margin-top: 6px;
+        }
+        .input-section {
+            background: white;
+            border-radius: 4px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #D0D7DE;
+            box-shadow: inset 0 1px 3px #f0f3f9;
+            margin-bottom: 32px;
+        }
+        .input-section i {
+            color: #1E3A8A;
+            font-size: 1rem;
+            margin-right: 12px;
+        }
+        .input-section input {
+            border: none;
+            flex: 1;
+            font-size: 0.95rem;
+            outline: none;
+            background: transparent;
+            color: #1F2A3A;
+        }
+        .send-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            background: #1E3A8A;
+            border: none;
+            color: white;
+            cursor: default;
+        }
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1F2A3A;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .recent-list {
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #D0D7DE;
+        }
+        .recent-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #eaeef4;
+            gap: 12px;
+            font-size: 0.9rem;
+        }
+        .badge {
+            background: #F0F3F9;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #1E3A8A;
+        }
+        hr {
+            border: 0.5px solid #D0D7DE;
+            margin: 24px 0;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 18px;
+            margin-bottom: 26px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            gap: 24px;
+        }
+        .tabs {
+            display: flex;
+            gap: 4px;
+            border-bottom: 1px solid #D0D7DE;
+            margin-bottom: 24px;
+            padding-bottom: 8px;
+        }
+        .tab {
+            padding: 6px 16px;
+            border-radius: 4px;
+            background: transparent;
+            color: #2f4057;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .tab.active-tab {
+            background: #1E3A8A;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active-tab-content {
+            display: block;
+        }
+        .data-table {
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #D0D7DE;
+        }
+        .table-row {
+            display: flex;
+            padding: 10px 16px;
+            border-bottom: 1px solid #eaeef4;
+        }
+        .table-row.header {
+            font-weight: 600;
+            color: #1E3A8A;
+            background: #F0F3F9;
+        }
+        .col {
+            flex: 1;
+        }
+        .btn {
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            background: #1E3A8A;
+            color: white;
+            border: none;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo-area">
+            <div class="logo"></div>
+            <span class="logo-text">SQLBot</span>
+        </div>
+        <div class="nav-item active" data-page="zhineng"><i class="fas fa-comment-dots"></i> 智能问数</div>
+        <div class="nav-item" data-page="dashboard"><i class="fas fa-chart-pie"></i> 仪表盘</div>
+        <div class="nav-item" data-page="datasource"><i class="fas fa-database"></i> 数据源</div>
+        <div class="nav-item" data-page="assistant"><i class="fas fa-robot"></i> 小助手应用</div>
+        <div class="nav-item" data-page="settings"><i class="fas fa-cog"></i> 设置</div>
+        <div class="nav-item" data-page="system"><i class="fas fa-server"></i> 系统管理</div>
+        <div class="nav-item" data-page="profile"><i class="fas fa-user-circle"></i> 个人中心</div>
+        <div class="bottom-nav">
+            <div class="nav-item" data-page="help"><i class="fas fa-question-circle"></i> 帮助</div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="top-bar">
+            <div class="workspace"><i class="fas fa-building" style="color:#1E3A8A;"></i> 生产环境 · 总部</div>
+            <div class="user-area">
+                <i class="fas fa-bell" style="color:#1E3A8A;"></i>
+                <div class="avatar"></div>
+            </div>
+        </div>
+
+        <!-- 页面：智能问数 -->
+        <div id="zhineng" class="page active-page">
+            <div style="margin-bottom: 20px;">
+                <h2 style="font-weight:500;">管理员 王军, 上午好</h2>
+                <p style="color:#5a6f8c;">待处理权限申请 (3) · 昨日查询峰值 203</p>
+            </div>
+            <div class="grid-3">
+                <div class="stat-card"><div class="stat-title">总查询次数</div><div class="stat-number">2.3k</div><span>本月 +12.5%</span></div>
+                <div class="stat-card"><div class="stat-title">活跃数据源</div><div class="stat-number">9</div><span>MySQL, Oracle, SQL Server</span></div>
+                <div class="stat-card"><div class="stat-title">审计日志</div><div class="stat-number">48</div><span>今日新增</span></div>
+            </div>
+            <div class="input-section">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="输入查询条件 / SQL 命令" value="SELECT * FROM 员工 WHERE 区域='华东'">
+                <button class="send-btn"><i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <div class="section-title"><i class="fas fa-list"></i> 最近执行</div>
+                    <div class="recent-list">
+                        <div class="recent-item"><i class="fas fa-code"></i> 华东区员工数量 <span class="badge">342</span></div>
+                        <div class="recent-item"><i class="fas fa-code"></i> 订单延迟统计 <span class="badge">23ms</span></div>
+                        <div class="recent-item"><i class="fas fa-code"></i> 库存预警 <span class="badge">6 items</span></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="section-title"><i class="fas fa-database"></i> 数据源监控</div>
+                    <div class="recent-list">
+                        <div class="recent-item"><i class="fas fa-check-circle" style="color:#2b8c5e;"></i> MySQL-主库 <span class="badge">连接正常</span></div>
+                        <div class="recent-item"><i class="fas fa-exclamation-triangle" style="color:#c95a0f;"></i> Oracle-分析 <span class="badge">延迟</span></div>
+                        <div class="recent-item"><i class="fas fa-check-circle" style="color:#2b8c5e;"></i> ClickHouse <span class="badge">正常</span></div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div style="display: flex; gap: 24px; color:#5a6f8c; font-size:0.8rem;">
+                <span><i class="fas fa-tag"></i> 默认模型: DeepSeek-v3</span>
+                <span><i class="fas fa-lock"></i> 行权限: 华东/华南</span>
+            </div>
+        </div>
+
+        <!-- 页面：仪表盘 -->
+        <div id="dashboard" class="page">
+            <h2 style="margin-bottom: 20px;">仪表盘 · 运营概览</h2>
+            <div class="grid-3">
+                <div class="stat-card"><div class="stat-title">总销售额</div><div class="stat-number">¥2.4M</div></div>
+                <div class="stat-card"><div class="stat-title">订单量</div><div class="stat-number">3,204</div></div>
+                <div class="stat-card"><div class="stat-title">转化率</div><div class="stat-number">23.5%</div></div>
+            </div>
+            <div style="background: white; border-radius: 6px; padding: 18px; border:1px solid #D0D7DE;">
+                <span class="section-title">近7日趋势</span>
+                <div style="height: 100px; background: linear-gradient(90deg, #1E3A8A, #7A9BCB); border-radius: 2px;"></div>
+            </div>
+        </div>
+
+        <!-- 页面：数据源 -->
+        <div id="datasource" class="page">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <h2>数据源管理</h2>
+                <span class="btn">+ 新建</span>
+            </div>
+            <div class="input-section" style="margin-bottom: 24px;">
+                <i class="fas fa-search"></i>
+                <input placeholder="搜索数据源...">
+            </div>
+            <div class="grid-3">
+                <div class="stat-card"><i class="fas fa-database"></i> MySQL-生产 <span class="badge" style="float:right;">已连接</span></div>
+                <div class="stat-card"><i class="fas fa-database"></i> Oracle-分析 <span class="badge" style="float:right;">异常</span></div>
+                <div class="stat-card"><i class="fas fa-file-csv"></i> 销售数据.csv <span class="badge">CSV</span></div>
+            </div>
+        </div>
+
+        <!-- 页面：小助手应用 -->
+        <div id="assistant" class="page">
+            <h2 style="margin-bottom: 20px;">小助手 · 嵌入应用</h2>
+            <div class="grid-2">
+                <div class="stat-card"><i class="fas fa-code"></i> 基础应用</div>
+                <div class="stat-card"><i class="fas fa-shield-alt"></i> 高级应用</div>
+            </div>
+        </div>
+
+        <!-- 页面：设置 -->
+        <div id="settings" class="page">
+            <h2 style="margin-bottom: 20px;">设置</h2>
+            <div class="tabs" id="settingsTabs">
+                <span class="tab active-tab" data-tab="member">成员管理</span>
+                <span class="tab" data-tab="permission">权限配置</span>
+                <span class="tab" data-tab="term">术语配置</span>
+                <span class="tab" data-tab="sql">SQL示例库</span>
+            </div>
+            <div id="member" class="tab-content active-tab-content">
+                <div class="data-table">
+                    <div class="table-row header"><div class="col">用户名</div><div class="col">角色</div></div>
+                    <div class="table-row"><div class="col">admin</div><div class="col">超级管理员</div></div>
+                    <div class="table-row"><div class="col">analyst</div><div class="col">数据分析师</div></div>
+                </div>
+            </div>
+            <div id="permission" class="tab-content">行权限：仅华东区 / 列权限：隐藏薪资</div>
+            <div id="term" class="tab-content">术语：销售额 = 订单金额 - 退款</div>
+            <div id="sql" class="tab-content">SELECT * FROM 员工 WHERE 区域='华东'</div>
+        </div>
+
+        <!-- 页面：系统管理 -->
+        <div id="system" class="page">
+            <h2 style="margin-bottom: 20px;">系统管理</h2>
+            <div class="tabs" id="systemTabs">
+                <span class="tab active-tab" data-tab="user">用户管理</span>
+                <span class="tab" data-tab="workspace">工作空间</span>
+                <span class="tab" data-tab="model">AI模型配置</span>
+                <span class="tab" data-tab="embed">嵌入式管理</span>
+                <span class="tab" data-tab="sysset">系统设置</span>
+            </div>
+            <div id="user" class="tab-content active-tab-content">
+                <div class="data-table">
+                    <div class="table-row header"><div class="col">账号</div><div class="col">最后登录</div></div>
+                    <div class="table-row"><div class="col">root</div><div class="col">2025-07-11</div></div>
+                </div>
+            </div>
+            <div id="workspace" class="tab-content">工作空间隔离配置</div>
+            <div id="model" class="tab-content">模型：DeepSeek, 阿里百炼</div>
+            <div id="embed" class="tab-content">嵌入代码管理</div>
+            <div id="sysset" class="tab-content">外观设置、登录认证</div>
+        </div>
+
+        <!-- 页面：个人中心 -->
+        <div id="profile" class="page">
+            <h2>个人中心</h2>
+            <div class="grid-2">
+                <div class="stat-card"><i class="fas fa-key"></i> 修改密码</div>
+                <div class="stat-card"><i class="fas fa-code"></i> API Key</div>
+                <div class="stat-card"><i class="fas fa-globe"></i> 语言</div>
+                <div class="stat-card"><i class="fas fa-info-circle"></i> 关于</div>
+            </div>
+        </div>
+
+        <!-- 页面：帮助 -->
+        <div id="help" class="page">
+            <h2>帮助文档</h2>
+        </div>
+    </div>
+
+    <script>
+        const navItems = document.querySelectorAll('.nav-item[data-page]');
+        const pages = document.querySelectorAll('.page');
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                navItems.forEach(n => n.classList.remove('active'));
+                this.classList.add('active');
+                const pageId = this.dataset.page;
+                pages.forEach(p => p.classList.remove('active-page'));
+                document.getElementById(pageId).classList.add('active-page');
+            });
+        });
+        function setupTabs(containerId) {
+            const tabs = document.querySelectorAll(`#${containerId} .tab`);
+            const contents = document.querySelectorAll(`#${containerId} .tab-content`);
+            if (tabs.length) {
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        tabs.forEach(t => t.classList.remove('active-tab'));
+                        this.classList.add('active-tab');
+                        contents.forEach(c => c.classList.remove('active-tab-content'));
+                        document.getElementById(this.dataset.tab).classList.add('active-tab-content');
+                    });
+                });
+            }
+        }
+        setupTabs('settings');
+        setupTabs('system');
+    </script>
+</body>
+</html>
